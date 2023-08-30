@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J23AudioList.html</title>
+    <script type="text/javascript">
+        // 현재 재생곡의 제목을 출력한다.
+        var divMsg;
+        // 오디오 객체
+        var audio;
+        // 셀렉트박스 및 인덱스
+        var select;
+        var index = 0;
+
+        window.onload = function () {
+            // 문서가 로드되면 각 엘리먼트를 얻어온다.
+            divMsg = document.getElementById("msg");
+            audio = document.getElementById("audio");
+            select = document.getElementById("select")
+            // 한곡의 재생이 완료되었을 때 발생되는 이벤트
+            audio.onended = function (e) {
+                // 인덱스를 증가s
+                index++;
+                // select가 가진 option의 객수 (여기서는 4개)로 나눈 나머지는
+                // 0~3이 되므로 이를 통해 index를 지정한다.
+                index %= select.length;
+                // 함수 호출을 통해 해당 index의 음원을 재생한다.
+                myPlay(index);
+            }
+        }
+        // select 태그에서 option을 선택했을때 발생되는 change이벤트를
+        // 통해서 호출되며 선택한 곡을 재생한다.
+        function changePlay() 
+        {
+            // 선택한 option의 index를 얻어와서 재생한다.
+            myPlay(select.selectedIndex);
+            // 다음곡 재생을 위한 전역변수도 변경해 놓는다.
+            index = select.selectedIndex;
+        }
+        function control(e) {
+            console.log(e);
+            /*
+                매개변수로 전달되는 이벤트 객체를 console에서 확인해보면
+                굉장히 많은 정보를 저장하고 있는 것을 볼 수 있는데
+                이를 통해 눌러진 버튼을 식별할 수 있다.
+                개발자모드(F12)에서 확인해보도록 한다.
+            */
+            if (e.target.id == "play") {
+                // 현재 지정된 index를 통해 재생한다.
+                console.log("플레이버튼");
+                myPlay(index);
+            }
+            else if (e.target.id == "next") {
+                console.log("넥스트버튼");
+                // 인덱스를 증가시킨 후 다음곡을 재생한다.
+                index++;
+                index %= select.length;
+                myPlay(index);
+                select.selectedIndex = index;
+            }
+        }
+        function myPlay(idx) {
+            audio.src = select.options[idx].value;
+            audio.play();
+            switch(select.selectedIndex)
+            {
+                case 0 : divMsg.innerHTML = "※이 노래는 이별이 오지 않을 것 같던 연인과의 이별을 겪은 후 느낀 막막한 심정을 표현한 곡입니다.";
+                break;
+                case 1 : divMsg.innerHTML = "※이 노래는 사랑하는 사람을 떠나보낸 아픔과 슬픔을 파워풀하게 표현한 곡입니다.";
+                break;
+                case 2 : divMsg.innerHTML = "※이 노래는 이별의 슬픔과 추억에 대한 그리운 마음을 감성적으로 표현한 곡입니다.";
+                break;
+                case 3 : divMsg.innerHTML = "※이 노래는 사랑하는 이들을 잃은 사람들의 아픔과 후회속에 자책하는 모습에 담백한 위로하며 표현한 곡입니다.";
+                break;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h2>노래를 쉽게 하는 남자: 이지우(EasyWoo) Player</h2>
+    <hr />
+    <p>
+        <li>디자인할 시간이 없어서 투박하지만 예쁘게 봐주세요.</li>
+        <li>개발자 이해현이 공부할겸 아이디어를 발휘해 만든 웹으로 만든 이지우 플레이어입니다.</li>
+        <li>노래가 끝나면 자동으로 다음곡으로 재생됩니다.</li>
+    </p>
+    <hr />
+    <audio id="audio" controls>
+        <p>브라우져가 audio태그를 지원하지 않습니다.</p>
+    </audio>
+    <br />
+    <select id="select" size="5" onchange="changePlay();">
+        <option value="./media/웃어 줄 것만 같아.mp3">
+            ▶ 이지우 - "웃어 줄 것만 같아"</option>
+            
+        <option value="./media/애써 웃으며.mp3">
+            ▷ 이지우 - "애써 웃으며"</option>
+            
+        <option value="./media/걷다가도.mp3">
+            ▶ 이지우 - "걷다가도"</option>
+            
+        <option value="./media/상실의풍경.mp3">
+            ▷ 이지우 - "상실의풍경"</option>
+            
+    </select>
+    <button type="button" id="play" onclick="control(event);">Play</button>
+    <button type="button" id="next" onclick="control(event);">Next</button>
+    <br />
+    <div id="msg">현재 연주되는 곡명이 보입니다.</div>
+</body>
+
+</html>
